@@ -1,18 +1,30 @@
 #include <iostream>
 
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+void displayMessage() {
+    std::cout << "[Глобальна область] Привіт від глобальної функції!\n";
+}
+
+namespace A {
+    namespace B {
+        void displayMessage() {
+            std::cout << "[Простір імен A::B] Привіт із вкладеного простору імен B!\n";
+        }
+    }
+}
 
 int main() {
-    // TIP Press <shortcut actionId="RenameElement"/> when your caret is at the <b>lang</b> variable name to see how CLion can help you rename it.
+    std::cout << "--- Етап 1: Виклик функцій через явну вказівку шляху ---\n";
+    ::displayMessage();
+    A::B::displayMessage();
+    std::cout << "\n--- Етап 2: Спроба імпорту простору імен B ---\n";
 
-    const auto lang = "C++";
-    std::cout << "Hello and welcome to " << lang << "!\n";
+    using namespace A::B;
 
-    for (int i = 1; i <= 5; i++) {
-        // TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        std::cout << "i = " << i << std::endl;
-    }
+    std::cout << "ПОМИЛКА: Прямий виклик displayMessage() призведе до помилки компіляції!\n";
+    std::cout << "ЧОМУ: Компілятор не знає, яку саме функцію викликати — "
+              << "глобальну ::displayMessage() чи імпортовану A::B::displayMessage(), "
+              << "оскільки обидві тепер доступні в поточній області видимості без префіксів.\n";
 
     return 0;
-    // TIP See CLion help at <a href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>. Also, you can try interactive lessons for CLion by selecting 'Help | Learn IDE Features' from the main menu.
 }
